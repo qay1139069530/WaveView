@@ -14,6 +14,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -84,7 +85,16 @@ public class WaveView extends View {
             mBitmap = BitmapFactory.decodeResource(getResources(), waveView_BoatBitmap, options);
             mBitmap = getCircleBitmap(mBitmap);
         } else {
-            mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
+            if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP){
+                Drawable vectorDrawable = context.getDrawable(R.mipmap.ic_launcher_round);
+                mBitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                        vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(mBitmap);
+                vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                vectorDrawable.draw(canvas);
+            }else {
+                mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
+            }
         }
 
         paint = new Paint();
